@@ -1,0 +1,15 @@
+app:
+  name: "SkyOrcaMax Simulator"
+
+ardupilot:
+  version: "Plane-4.6.3"
+  frame: "quadplane"
+
+network:
+  gcs_out: "udp:127.0.0.1:14550"
+
+start_location:
+  latitude: -6.9802782
+  longitude: 107.5696009
+  altitude_m: 659.0
+  heading_deg: 310.0

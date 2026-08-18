@@ -1,0 +1,29 @@
+# SkyOrcaMax QuadPlane defaults for ArduPlane 4.6.3
+Q_ENABLE 1
+Q_FRAME_CLASS 1
+Q_FRAME_TYPE 1
+Q_MAV_TYPE 20
+# Keep the wings within LEVEL_ROLL_LIMIT during forward transition.
+Q_OPTIONS 1
+
+AIRSPEED_CRUISE 21
+TECS_CLMB_MAX 3
+TECS_SINK_MAX 2
+PTCH_LIM_MAX_DEG 20
+PTCH_LIM_MIN_DEG -15
+ROLL_LIMIT_DEG 30
+WP_LOITER_RAD 180
+RTL_AUTOLAND 1
+
+# 12S Li-ion/LiPo battery: 44.4 V nominal, 50.4 V full, 27 Ah.
+BATT_MONITOR 4
+BATT_CAPACITY 27000
+SIM_BATT_VOLTAGE 44.4
+SIM_BATT_CAP_AH 27
+Q_M_BAT_VOLT_MAX 50.4
+Q_M_BAT_VOLT_MIN 36.0
+
+# At 44.4 V, the built-in QuadPlane model's nominal targets are about
+# 450 W in level cruise and 1200 W during VTOL. Actual current remains
+# dynamic because ArduPilot SITL derives it from throttle and motor load.
+TRIM_THROTTLE 50

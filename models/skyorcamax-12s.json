@@ -1,0 +1,7 @@
+{
+  "refVoltage": 44.4,
+  "refCurrent": 27.027,
+  "maxVoltage": 50.4,
+  "battCapacityAh": 27.0,
+  "refBatRes": 0.03
+}

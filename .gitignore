@@ -1,0 +1,6 @@
+.venv/
+ardupilot/
+__pycache__/
+*.pyc
+logs/
+

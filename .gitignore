@@ -3,4 +3,6 @@ ardupilot/
 __pycache__/
 *.pyc
 logs/
-
+build-appimage/
+dist/
+*.spec

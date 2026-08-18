@@ -25,6 +25,19 @@ ArduPilot lama tidak dijalankan agar tetap kompatibel dengan Linux Mint.
 ./launch.sh
 ```
 
+## Membuat dan Memasang AppImage
+
+Setelah `setup.sh` selesai, jalankan:
+
+```bash
+./install.sh
+```
+
+Builder membuat AppImage portable di `dist/`, memasangnya sebagai
+`~/.local/bin/SkyOrcaMax-Simulator.AppImage`, dan membuat shortcut aplikasi
+langsung di Desktop. Data runtime SITL dari AppImage disimpan di
+`~/.local/share/skyorcamax-simulator/runtime`.
+
 Klik atau drag marker untuk memilih lokasi. Latitude/longitude juga dapat diketik
 langsung. Altitude MSL diperbarui otomatis dari data terrain SRTM30m setiap titik
 berubah dan tetap dapat diedit manual jika layanan elevasi tidak tersedia. Atur

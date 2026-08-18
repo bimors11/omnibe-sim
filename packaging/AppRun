@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+APPDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export QTWEBENGINE_DISABLE_SANDBOX="${QTWEBENGINE_DISABLE_SANDBOX:-1}"
+exec "${APPDIR}/usr/lib/skyorcamax-simulator/skyorcamax-simulator" "$@"

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import signal
+import shutil
 import sys
 from pathlib import Path
 
@@ -17,7 +18,7 @@ from .map_widget import MapWidget
 from .terrain import fetch_terrain_altitude_m
 
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(sys._MEIPASS) if getattr(sys, "frozen", False) else Path(__file__).resolve().parent.parent
 
 
 class TerrainWorker(QObject):
@@ -263,8 +264,17 @@ class MainWindow(QMainWindow):
             return
         location = f"{self.latitude.value():.7f},{self.longitude.value():.7f},{self.altitude.value():.1f},{self.heading.value():.1f}"
         defaults = ROOT / "ardupilot" / "Tools" / "autotest" / "default_params" / "quadplane.parm"
-        # ArduPilot 4.6.3 resolves external model JSON from the SITL cwd.
-        model = "../models/skyorcamax-12s.json"
+        if getattr(sys, "frozen", False):
+            runtime = Path.home() / ".local" / "share" / "skyorcamax-simulator" / "runtime"
+            runtime.mkdir(parents=True, exist_ok=True)
+            model_name = "skyorcamax-12s.json"
+            shutil.copy2(ROOT / "models" / model_name, runtime / model_name)
+            model = model_name
+            sitl_cwd = runtime
+        else:
+            # ArduPilot 4.6.3 resolves external model JSON from the SITL cwd.
+            model = "../models/skyorcamax-12s.json"
+            sitl_cwd = ROOT / "ardupilot"
         args = [
             "-S", "-w", "--model", f"quadplane:{model}", "--home", location,
             "--defaults", f"{defaults},{ROOT / 'skyorcamax.param'}",
@@ -272,7 +282,7 @@ class MainWindow(QMainWindow):
         ]
         self.logs.appendPlainText(f"[APP] Starting at {location}")
         self.logs.appendPlainText("[APP] QGroundControl output: udp://127.0.0.1:14550")
-        self.process.setWorkingDirectory(str(ROOT / "ardupilot"))
+        self.process.setWorkingDirectory(str(sitl_cwd))
         self.set_status("STARTING", "starting")
         self.process.start(str(sitl), args)
 

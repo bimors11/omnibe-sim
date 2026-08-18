@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=SkyOrcaMax Simulator
+Comment=ArduPlane QuadPlane SITL launcher
+Exec=skyorcamax-simulator
+Icon=skyorcamax
+Categories=Utility;Education;
+Terminal=false
+StartupNotify=true

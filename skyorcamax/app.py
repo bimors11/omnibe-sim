@@ -300,7 +300,7 @@ class MainWindow(QMainWindow):
             defaults_arg = "quadplane.parm,skyorcamax.param"
             sitl_cwd = runtime
         else:
-            # ArduPilot 4.6.3 resolves external model JSON from the SITL cwd.
+            # ArduPilot resolves external model JSON from the SITL cwd.
             model = "../models/skyorcamax-12s.json"
             defaults_arg = f"{defaults},{ROOT / 'skyorcamax.param'}"
             sitl_cwd = ROOT / "ardupilot"

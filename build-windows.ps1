@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [switch]$SkipSITLBuild,
+    [switch]$BuildSITLFromSource,
     [switch]$NoDesktopShortcut
 )
 
@@ -11,7 +11,7 @@ $CygwinRoot = Join-Path $BuildRoot "cygwin64"
 $ArduPilotRoot = Join-Path $BuildRoot "ardupilot"
 $SITLStage = Join-Path $BuildRoot "sitl"
 $Venv = Join-Path $BuildRoot ".venv"
-$Tag = "Plane-4.6.3"
+$Tag = "Plane-4.5.7"
 
 function Invoke-Cygwin([string]$Command) {
     $bash = Join-Path $CygwinRoot "bin\bash.exe"
@@ -64,7 +64,7 @@ function Install-Python311 {
 
 New-Item -ItemType Directory -Force -Path $BuildRoot | Out-Null
 
-if (-not $SkipSITLBuild) {
+if ($BuildSITLFromSource) {
     Write-Host "[1/5] Menyiapkan toolchain ArduPilot Windows lokal..."
     $setup = Join-Path $BuildRoot "setup-x86_64.exe"
     if (-not (Test-Path $setup)) {
@@ -91,8 +91,11 @@ if (-not $SkipSITLBuild) {
     Invoke-Cygwin "cd '$cygBuild/ardupilot' && python3 ./waf configure --board sitl && python3 ./waf plane -j4"
 
     New-Item -ItemType Directory -Force -Path $SITLStage | Out-Null
+    New-Item -ItemType Directory -Force -Path (Join-Path $SITLStage "defaults") | Out-Null
     Copy-Item (Join-Path $ArduPilotRoot "build\sitl\bin\arduplane.exe") `
         (Join-Path $SITLStage "ArduPlane.elf.exe") -Force
+    Copy-Item (Join-Path $ArduPilotRoot "Tools\autotest\default_params\quadplane.parm") `
+        (Join-Path $SITLStage "defaults\quadplane.parm") -Force
     $cygcheck = Join-Path $CygwinRoot "bin\cygcheck.exe"
     $dependencies = & $cygcheck (Join-Path $SITLStage "ArduPlane.elf.exe")
     $dllNames = $dependencies | ForEach-Object {
@@ -101,8 +104,16 @@ if (-not $SkipSITLBuild) {
     foreach ($dll in $dllNames) {
         Copy-Item (Join-Path $CygwinRoot "bin\$dll") $SITLStage -Force
     }
-} elseif (-not (Test-Path (Join-Path $SITLStage "ArduPlane.elf.exe"))) {
-    throw "Binary SITL belum ada. Hapus -SkipSITLBuild untuk membangunnya."
+} else {
+    Write-Host "[1/5] Menggunakan ArduPlane SITL 4.5.7 bawaan..."
+    $PrebuiltSITL = Join-Path $ProjectRoot "prebuilt\windows\sitl"
+    if (-not (Test-Path (Join-Path $PrebuiltSITL "ArduPlane.elf.exe"))) {
+        throw "Runtime SITL bawaan tidak ditemukan. Clone repository secara lengkap."
+    }
+    New-Item -ItemType Directory -Force -Path $SITLStage | Out-Null
+    Copy-Item "$PrebuiltSITL\*" $SITLStage -Recurse -Force
+    Write-Host "[2/5] Build firmware dilewati; pengguna tidak memerlukan Cygwin."
+    Write-Host "[3/5] Parameter SkyOrcaMax terbaru akan dibundel."
 }
 
 Write-Host "[4/5] Membuat aplikasi Windows native..."
@@ -133,11 +144,11 @@ $data = @(
     "$(Join-Path $ProjectRoot 'config.yaml');.",
     "$(Join-Path $ProjectRoot 'skyorcamax.param');.",
     "$(Join-Path $ProjectRoot 'models');models",
-    "$(Join-Path $ArduPilotRoot 'Tools\autotest\default_params\quadplane.parm');defaults",
+    "$(Join-Path $SITLStage 'defaults\quadplane.parm');defaults",
     "$SITLStage;sitl"
 )
 $arguments = @(
-    "-m", "PyInstaller", "--noconfirm", "--clean", "--windowed", "--onedir",
+    "-m", "PyInstaller", "--noconfirm", "--clean", "--windowed", "--onefile",
     "--name", "SkyOrcaMax Simulator", "--distpath", $Dist, "--workpath", $Work,
     "--specpath", $BuildRoot
 )
@@ -147,18 +158,16 @@ $arguments += (Join-Path $ProjectRoot "launcher.py")
 if ($LASTEXITCODE -ne 0) { throw "PyInstaller gagal membuat aplikasi." }
 
 Write-Host "[5/5] Membuat paket dan shortcut..."
-$AppDir = Join-Path $Dist "SkyOrcaMax Simulator"
-$Zip = Join-Path $Dist "SkyOrcaMax-Simulator-Windows-x64.zip"
-Compress-Archive -Path "$AppDir\*" -DestinationPath $Zip -Force
+$AppExe = Join-Path $Dist "SkyOrcaMax Simulator.exe"
+if (-not (Test-Path $AppExe)) { throw "File aplikasi hasil build tidak ditemukan." }
 if (-not $NoDesktopShortcut) {
     $desktop = [Environment]::GetFolderPath("Desktop")
     $shell = New-Object -ComObject WScript.Shell
     $shortcut = $shell.CreateShortcut((Join-Path $desktop "SkyOrcaMax Simulator.lnk"))
-    $shortcut.TargetPath = Join-Path $AppDir "SkyOrcaMax Simulator.exe"
-    $shortcut.WorkingDirectory = $AppDir
+    $shortcut.TargetPath = $AppExe
+    $shortcut.WorkingDirectory = $Dist
     $shortcut.Save()
 }
 
 Write-Host ""
-Write-Host "Build selesai: $Zip"
-Write-Host "Aplikasi: $(Join-Path $AppDir 'SkyOrcaMax Simulator.exe')"
+Write-Host "Aplikasi siap pakai: $AppExe"

@@ -1,5 +1,8 @@
 name: Build Windows
 
+permissions:
+  contents: write
+
 on:
   workflow_dispatch:
   push:
@@ -18,4 +21,12 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: SkyOrcaMax-Simulator-Windows-x64
-          path: dist-windows/SkyOrcaMax-Simulator-Windows-x64.zip
+          path: dist-windows/SkyOrcaMax Simulator.exe
+      - name: Publish executable on tagged releases
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" --generate-notes --title "SkyOrcaMax Simulator ${{ github.ref_name }}"
+          gh release upload "${{ github.ref_name }}" "dist-windows/SkyOrcaMax Simulator.exe"

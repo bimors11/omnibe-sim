@@ -1,6 +1,7 @@
 # SkyOrcaMax Simulator
 
-Launcher desktop sederhana untuk ArduPlane QuadPlane SITL versi 4.6.3. Simulator
+Launcher desktop sederhana untuk ArduPlane QuadPlane SITL. Versi Linux membangun
+firmware 4.6.3, sedangkan paket Windows memakai runtime 4.5.7 siap pakai. Simulator
 menggunakan model `quadplane` bawaan ArduPilot tanpa FlightGear, JSBSim eksternal,
 Docker, atau checkout ArduPilot global.
 
@@ -43,9 +44,15 @@ langsung. Altitude MSL diperbarui otomatis dari data terrain SRTM30m setiap titi
 berubah dan tetap dapat diedit manual jika layanan elevasi tidak tersedia. Atur
 heading lalu tekan **Start**. QGroundControl menerima telemetry pada UDP `14550`.
 
-## Build Windows Native (tanpa WSL)
+## Windows Native (tanpa WSL)
 
 Panduan lengkap tersedia di [README_WINDOWS.md](README_WINDOWS.md).
+
+Pengguna cukup mengunduh `SkyOrcaMax Simulator.exe` dari halaman **Releases**.
+ArduPlane SITL 4.5.7 dan parameter QuadPlane sudah dibundel, sehingga pengguna
+tidak perlu Python, Cygwin, WSL, Docker, clone repository, atau build source.
+
+Instruksi berikut hanya untuk developer yang ingin membangun ulang EXE.
 
 Jalankan dari **Windows PowerShell**. Python 3.11 atau lebih baru akan digunakan
 jika sudah tersedia; Python dan dependency build dipasang otomatis bila perlu:
@@ -58,23 +65,22 @@ Set-ExecutionPolicy -Scope Process Bypass
 Pengguna juga dapat langsung klik dua kali `install-windows.cmd` tanpa mengetik
 perintah PowerShell.
 
-Skrip mengambil tag ArduPilot `Plane-4.6.3`, membangun SITL Windows, lalu membuat
-`dist-windows\SkyOrcaMax-Simulator-Windows-x64.zip` dan shortcut di Desktop.
-Aplikasi hasil build tidak membutuhkan WSL atau instalasi Cygwin karena DLL yang
-diperlukan SITL sudah ikut di dalam paket. Toolchain Cygwin hanya disimpan lokal
-di `build-windows` selama proses kompilasi dan dapat dihapus sesudah build.
+Skrip memakai ArduPlane SITL Windows 4.5.7 yang sudah disertakan, lalu membuat
+`dist-windows\SkyOrcaMax Simulator.exe` dan shortcut di Desktop. Build normal
+tidak membutuhkan WSL, Docker, atau Cygwin karena binary dan DLL SITL sudah ada.
 
-Build juga dapat dijalankan dari tab **Actions > Build Windows** di GitHub. Artifact
-ZIP hasilnya tersedia pada halaman workflow run.
+Build juga dapat dijalankan dari tab **Actions > Build Windows** di GitHub. EXE
+hasilnya tersedia sebagai artifact; build dari tag `v*` otomatis memasangnya pada
+GitHub Release.
 
 Setiap Start memakai reset parameter (`-w`), memuat parameter dasar `quadplane`
-resmi dari checkout 4.6.3, lalu menerapkan `skyorcamax.param` sebagai override.
+sesuai runtime, lalu menerapkan `skyorcamax.param` terbaru sebagai override.
 
 ## Default Pesawat
 
 | Pengaturan | Nilai |
 | --- | ---: |
-| Firmware | ArduPlane 4.6.3 |
+| Firmware | ArduPlane 4.6.3 (Linux) / 4.5.7 (Windows) |
 | Model SITL | QuadPlane bawaan |
 | Layout VTOL | Quad X |
 | MAVLink type | VTOL Quadrotor (20) |

@@ -1,4 +1,4 @@
-# SkyOrcaMax QuadPlane defaults for ArduPlane 4.6.3
+# SkyOrcaMax QuadPlane defaults
 Q_ENABLE 1
 Q_FRAME_CLASS 1
 Q_FRAME_TYPE 1

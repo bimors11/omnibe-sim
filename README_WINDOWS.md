@@ -1,9 +1,19 @@
 # SkyOrcaMax Simulator untuk Windows
 
-Panduan ini membuat aplikasi Windows 64-bit tanpa WSL dan tanpa Docker. Proses
-build memakai toolchain ArduPilot Windows yang disimpan secara lokal di folder
-project. Komputer yang hanya menjalankan hasil build tidak perlu memasang Python,
-WSL, atau Cygwin.
+SkyOrcaMax Simulator tersedia sebagai satu file EXE Windows 64-bit, tanpa WSL,
+Docker, Python, atau instalasi Cygwin.
+
+## Instalasi untuk Pengguna
+
+1. Buka halaman **Releases** repository GitHub.
+2. Download `SkyOrcaMax Simulator.exe` dari release terbaru.
+3. Letakkan file di folder yang diinginkan dan klik dua kali untuk menjalankannya.
+
+ArduPlane QuadPlane SITL 4.5.7, DLL runtime, model baterai, dan parameter terbaru
+sudah berada di dalam EXE. Pengguna tidak perlu clone repository atau menjalankan
+proses build.
+
+Bagian berikut hanya diperlukan oleh developer yang ingin membuat ulang EXE.
 
 ## Persyaratan Build
 
@@ -49,14 +59,12 @@ Set-ExecutionPolicy -Scope Process Bypass
 .\build-windows.ps1
 ```
 
-Pada build pertama, skrip akan:
+Builder akan:
 
-1. Mengunduh toolchain Windows ke `build-windows`.
-2. Mengunduh ArduPilot tag `Plane-4.6.3`.
-3. Membangun ArduPlane QuadPlane SITL untuk Windows.
-4. Membuat environment Python khusus build.
-5. Mengemas GUI, SITL, parameter, model, dan DLL runtime.
-6. Membuat shortcut **SkyOrcaMax Simulator** di Desktop.
+1. Menggunakan binary ArduPlane QuadPlane SITL 4.5.7 yang sudah tersedia.
+2. Membuat environment Python khusus build.
+3. Mengemas GUI, SITL, parameter terbaru, model, dan DLL runtime.
+4. Membuat shortcut **SkyOrcaMax Simulator** di Desktop.
 
 Proses pertama dapat berlangsung cukup lama. Jangan tutup PowerShell selama build
 masih berjalan.
@@ -74,22 +82,22 @@ QGroundControl menerima telemetry melalui UDP `127.0.0.1:14550`.
 
 ## Paket untuk Komputer Lain
 
-Builder menghasilkan file:
+Builder menghasilkan satu file portable:
 
 ```text
-dist-windows\SkyOrcaMax-Simulator-Windows-x64.zip
+dist-windows\SkyOrcaMax Simulator.exe
 ```
 
-Ekstrak seluruh isi ZIP sebelum menjalankan aplikasi. Jangan menjalankan file EXE
-langsung dari dalam tampilan ZIP karena file SITL dan DLL harus berada bersama
-aplikasi.
+File tersebut dapat langsung dipindahkan dan dijalankan pada komputer Windows
+64-bit lain.
 
 ## Build Ulang
 
-Untuk mengemas ulang GUI tanpa membangun SITL lagi:
+Build normal tidak memerlukan Cygwin. Developer yang secara khusus ingin
+mengompilasi ulang firmware 4.5.7 dapat menjalankan:
 
 ```powershell
-.\build-windows.ps1 -SkipSITLBuild
+.\build-windows.ps1 -BuildSITLFromSource
 ```
 
 Untuk build tanpa membuat shortcut Desktop:

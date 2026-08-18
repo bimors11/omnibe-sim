@@ -45,6 +45,8 @@ heading lalu tekan **Start**. QGroundControl menerima telemetry pada UDP `14550`
 
 ## Build Windows Native (tanpa WSL)
 
+Panduan lengkap tersedia di [README_WINDOWS.md](README_WINDOWS.md).
+
 Jalankan dari **Windows PowerShell** dengan Python 3 Windows sudah terpasang:
 
 ```powershell

@@ -11,10 +11,12 @@ WSL, atau Cygwin.
 - Koneksi internet
 - Ruang kosong minimal 10 GB
 - Git for Windows: <https://git-scm.com/download/win>
-- Python 3 64-bit: <https://www.python.org/downloads/windows/>
 
-Saat memasang Python, aktifkan pilihan **Add Python to PATH** dan pastikan Python
-Launcher (`py`) ikut terpasang.
+Python 3.11 atau lebih baru, toolchain SITL, dependency Python, dan seluruh
+komponen build lainnya akan diperiksa secara otomatis. Python kompatibel yang
+sudah terpasang tidak akan dipasang ulang. Git hanya dibutuhkan ketika project
+diambil menggunakan perintah `git clone`; source juga dapat diunduh sebagai ZIP
+dari GitHub.
 
 ## Clone Branch Windows
 
@@ -36,7 +38,11 @@ Output yang diharapkan adalah `windows-ver`.
 
 ## Membuat Aplikasi
 
-Jalankan builder dari PowerShell:
+Cara termudah adalah klik dua kali `install-windows.cmd`. Skrip tersebut memasang
+semua dependency, membangun aplikasi, dan membuat shortcut Desktop secara
+otomatis.
+
+Sebagai alternatif, jalankan builder dari PowerShell:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
@@ -94,10 +100,11 @@ Untuk build tanpa membuat shortcut Desktop:
 
 ## Troubleshooting
 
-### Perintah `py` tidak ditemukan
+### Python tidak dapat dipasang otomatis
 
-Pasang ulang Python dari python.org dan aktifkan Python Launcher serta **Add Python
-to PATH**.
+Builder mencoba `winget` terlebih dahulu, kemudian memakai installer resmi Python
+3.11 sebagai fallback. Jika keduanya diblokir oleh kebijakan Windows, pasang Python
+3.11 64-bit dari python.org, buka PowerShell baru, lalu jalankan builder kembali.
 
 ### PowerShell memblokir skrip
 

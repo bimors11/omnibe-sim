@@ -47,12 +47,16 @@ heading lalu tekan **Start**. QGroundControl menerima telemetry pada UDP `14550`
 
 Panduan lengkap tersedia di [README_WINDOWS.md](README_WINDOWS.md).
 
-Jalankan dari **Windows PowerShell** dengan Python 3 Windows sudah terpasang:
+Jalankan dari **Windows PowerShell**. Python 3.11 atau lebih baru akan digunakan
+jika sudah tersedia; Python dan dependency build dipasang otomatis bila perlu:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
 .\build-windows.ps1
 ```
+
+Pengguna juga dapat langsung klik dua kali `install-windows.cmd` tanpa mengetik
+perintah PowerShell.
 
 Skrip mengambil tag ArduPilot `Plane-4.6.3`, membangun SITL Windows, lalu membuat
 `dist-windows\SkyOrcaMax-Simulator-Windows-x64.zip` dan shortcut di Desktop.

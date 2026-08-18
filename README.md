@@ -43,6 +43,24 @@ langsung. Altitude MSL diperbarui otomatis dari data terrain SRTM30m setiap titi
 berubah dan tetap dapat diedit manual jika layanan elevasi tidak tersedia. Atur
 heading lalu tekan **Start**. QGroundControl menerima telemetry pada UDP `14550`.
 
+## Build Windows Native (tanpa WSL)
+
+Jalankan dari **Windows PowerShell** dengan Python 3 Windows sudah terpasang:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+.\build-windows.ps1
+```
+
+Skrip mengambil tag ArduPilot `Plane-4.6.3`, membangun SITL Windows, lalu membuat
+`dist-windows\SkyOrcaMax-Simulator-Windows-x64.zip` dan shortcut di Desktop.
+Aplikasi hasil build tidak membutuhkan WSL atau instalasi Cygwin karena DLL yang
+diperlukan SITL sudah ikut di dalam paket. Toolchain Cygwin hanya disimpan lokal
+di `build-windows` selama proses kompilasi dan dapat dihapus sesudah build.
+
+Build juga dapat dijalankan dari tab **Actions > Build Windows** di GitHub. Artifact
+ZIP hasilnya tersedia pada halaman workflow run.
+
 Setiap Start memakai reset parameter (`-w`), memuat parameter dasar `quadplane`
 resmi dari checkout 4.6.3, lalu menerapkan `skyorcamax.param` sebagai override.
 

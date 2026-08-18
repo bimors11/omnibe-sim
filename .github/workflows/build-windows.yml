@@ -1,0 +1,21 @@
+name: Build Windows
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  windows-x64:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Windows package without WSL
+        shell: powershell
+        run: .\build-windows.ps1 -NoDesktopShortcut
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SkyOrcaMax-Simulator-Windows-x64
+          path: dist-windows/SkyOrcaMax-Simulator-Windows-x64.zip

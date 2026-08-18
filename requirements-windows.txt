@@ -1,0 +1,4 @@
+PyQt5==5.15.11
+PyQtWebEngine==5.15.7
+PyYAML==6.0.2
+pyinstaller==6.15.0

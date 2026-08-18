@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import signal
+import os
 import shutil
+import signal
 import sys
 from pathlib import Path
 
@@ -18,7 +19,29 @@ from .map_widget import MapWidget
 from .terrain import fetch_terrain_altitude_m
 
 
-ROOT = Path(sys._MEIPASS) if getattr(sys, "frozen", False) else Path(__file__).resolve().parent.parent
+ROOT = (
+    Path(sys._MEIPASS)
+    if getattr(sys, "frozen", False)
+    else Path(__file__).resolve().parent.parent
+)
+
+
+def runtime_directory() -> Path:
+    if sys.platform == "win32":
+        base = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData" / "Local"))
+        return base / "SkyOrcaMax Simulator" / "runtime"
+    return Path.home() / ".local" / "share" / "skyorcamax-simulator" / "runtime"
+
+
+def sitl_assets() -> tuple[Path, Path]:
+    """Return the platform SITL executable and stock QuadPlane defaults."""
+    windows_sitl = ROOT / "sitl" / "ArduPlane.elf.exe"
+    if sys.platform == "win32" or windows_sitl.exists():
+        return windows_sitl, ROOT / "defaults" / "quadplane.parm"
+    return (
+        ROOT / "ardupilot" / "build" / "sitl" / "bin" / "arduplane",
+        ROOT / "ardupilot" / "Tools" / "autotest" / "default_params" / "quadplane.parm",
+    )
 
 
 class TerrainWorker(QObject):
@@ -258,26 +281,32 @@ class MainWindow(QMainWindow):
     def start_sitl(self) -> None:
         if self.process.state() != QProcess.NotRunning:
             return
-        sitl = ROOT / "ardupilot" / "build" / "sitl" / "bin" / "arduplane"
+        sitl, defaults = sitl_assets()
         if not sitl.exists():
-            QMessageBox.critical(self, "SITL belum tersedia", "Jalankan ./setup.sh terlebih dahulu.")
+            setup_name = "build-windows.ps1" if sys.platform == "win32" else "setup.sh"
+            QMessageBox.critical(
+                self, "SITL belum tersedia", f"Jalankan {setup_name} terlebih dahulu."
+            )
             return
         location = f"{self.latitude.value():.7f},{self.longitude.value():.7f},{self.altitude.value():.1f},{self.heading.value():.1f}"
-        defaults = ROOT / "ardupilot" / "Tools" / "autotest" / "default_params" / "quadplane.parm"
         if getattr(sys, "frozen", False):
-            runtime = Path.home() / ".local" / "share" / "skyorcamax-simulator" / "runtime"
+            runtime = runtime_directory()
             runtime.mkdir(parents=True, exist_ok=True)
             model_name = "skyorcamax-12s.json"
             shutil.copy2(ROOT / "models" / model_name, runtime / model_name)
+            shutil.copy2(defaults, runtime / "quadplane.parm")
+            shutil.copy2(ROOT / "skyorcamax.param", runtime / "skyorcamax.param")
             model = model_name
+            defaults_arg = "quadplane.parm,skyorcamax.param"
             sitl_cwd = runtime
         else:
             # ArduPilot 4.6.3 resolves external model JSON from the SITL cwd.
             model = "../models/skyorcamax-12s.json"
+            defaults_arg = f"{defaults},{ROOT / 'skyorcamax.param'}"
             sitl_cwd = ROOT / "ardupilot"
         args = [
             "-S", "-w", "--model", f"quadplane:{model}", "--home", location,
-            "--defaults", f"{defaults},{ROOT / 'skyorcamax.param'}",
+            "--defaults", defaults_arg,
             "--serial0", "udpclient:127.0.0.1:14550",
         ]
         self.logs.appendPlainText(f"[APP] Starting at {location}")

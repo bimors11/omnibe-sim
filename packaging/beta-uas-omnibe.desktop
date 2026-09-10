@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
-Name=SkyOrcaMax Simulator
+Name=BETA-UAS Omnibe
 Comment=ArduPlane QuadPlane SITL launcher
-Exec=skyorcamax-simulator
-Icon=skyorcamax
+Exec=beta-uas-omnibe
+Icon=beta-uas-omnibe
 Categories=Utility;Education;
 Terminal=false
 StartupNotify=true

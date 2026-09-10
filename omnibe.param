@@ -1,4 +1,4 @@
-# SkyOrcaMax QuadPlane defaults for ArduPlane 4.6.3
+# BETA-UAS Omnibe QuadPlane defaults for ArduPlane 4.6.3
 Q_ENABLE 1
 Q_FRAME_CLASS 1
 Q_FRAME_TYPE 1

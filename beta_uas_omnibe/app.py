@@ -74,7 +74,7 @@ class MainWindow(QMainWindow):
         row = QHBoxLayout(header)
         row.setContentsMargins(18, 11, 10, 11)
         row.setSpacing(8)
-        title = QLabel("SkyOrcaMax Simulator")
+        title = QLabel("BETA-UAS Omnibe")
         title.setObjectName("title")
         subtitle = QLabel("QUADPLANE SITL")
         subtitle.setObjectName("subtitle")
@@ -265,19 +265,19 @@ class MainWindow(QMainWindow):
         location = f"{self.latitude.value():.7f},{self.longitude.value():.7f},{self.altitude.value():.1f},{self.heading.value():.1f}"
         defaults = ROOT / "ardupilot" / "Tools" / "autotest" / "default_params" / "quadplane.parm"
         if getattr(sys, "frozen", False):
-            runtime = Path.home() / ".local" / "share" / "skyorcamax-simulator" / "runtime"
+            runtime = Path.home() / ".local" / "share" / "beta-uas-omnibe" / "runtime"
             runtime.mkdir(parents=True, exist_ok=True)
-            model_name = "skyorcamax-12s.json"
+            model_name = "omnibe-12s.json"
             shutil.copy2(ROOT / "models" / model_name, runtime / model_name)
             model = model_name
             sitl_cwd = runtime
         else:
             # ArduPilot 4.6.3 resolves external model JSON from the SITL cwd.
-            model = "../models/skyorcamax-12s.json"
+            model = "../models/omnibe-12s.json"
             sitl_cwd = ROOT / "ardupilot"
         args = [
             "-S", "-w", "--model", f"quadplane:{model}", "--home", location,
-            "--defaults", f"{defaults},{ROOT / 'skyorcamax.param'}",
+            "--defaults", f"{defaults},{ROOT / 'omnibe.param'}",
             "--serial0", "udpclient:127.0.0.1:14550",
         ]
         self.logs.appendPlainText(f"[APP] Starting at {location}")
@@ -350,7 +350,7 @@ QToolTip { color: #ffffff; background: #20383d; border: 1px solid #47636a; paddi
 def main() -> int:
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     app = QApplication(sys.argv)
-    app.setApplicationName("SkyOrcaMax Simulator")
+    app.setApplicationName("BETA-UAS Omnibe")
     window = MainWindow()
     window.show()
     return app.exec_()

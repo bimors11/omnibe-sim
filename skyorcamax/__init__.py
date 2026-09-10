@@ -1,2 +1,0 @@
-"""SkyOrcaMax Simulator launcher."""
-

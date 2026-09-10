@@ -1,0 +1,1 @@
+"""BETA-UAS Omnibe launcher."""

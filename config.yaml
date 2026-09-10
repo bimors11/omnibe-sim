@@ -1,5 +1,5 @@
 app:
-  name: "SkyOrcaMax Simulator"
+  name: "BETA-UAS Omnibe"
 
 ardupilot:
   version: "Plane-4.6.3"

@@ -59,4 +59,4 @@ export PATH="${VENV}/bin:${HOME}/.local/bin:${PATH}"
 )
 
 echo
-echo "SkyOrcaMax Simulator siap. Jalankan: ${PROJECT_ROOT}/launch.sh"
+echo "BETA-UAS Omnibe siap. Jalankan: ${PROJECT_ROOT}/launch.sh"
